@@ -1,13 +1,13 @@
 # Databricks notebook source
 # DBTITLE 1,Estabelecendo conexão com o data lake
 # MAGIC %python
-# MAGIC config = {"fs.azure.account.key.dlsturma05imersaoprod.blob.core.windows.net":dbutils.secrets.get(scope = "scp-kv-prod", key = "secret-key-datalake")}
+# MAGIC config = {"fs.azure.acount.key.dlscognitivo.blob.core.windows.net/":dbutils.secrets.get(scope = "scp-kv-cognitivo", key = "secret-key-datalake")}
 
 # COMMAND ----------
 
 # DBTITLE 1,Lista de containers
 # MAGIC %python
-# MAGIC containers = ["bronze", "silver", "gold"]
+# MAGIC containers = ["raw"]
 
 # COMMAND ----------
 
@@ -16,13 +16,16 @@ def mount_datalake(containers):
     try:
         for container in containers:
             dbutils.fs.mount(
-                source = f"wasbs://{container}@dlsturma05imersaoprod.blob.core.windows.net",
+                source = f"abfss://{container}@dlscognitivo.blob.core.windows.net/",
+                           
+                            
                 mount_point = f"/mnt/{container}",
                 extra_configs = config
             )
             print(container)
     except ValueError as err:
         print(err)
+        
 
 # COMMAND ----------
 
@@ -39,12 +42,12 @@ def unmount_datalake(containers):
 # DBTITLE 1,Lista camadas - DBFS
 # MAGIC %fs
 # MAGIC 
-# MAGIC ls /mnt/bronze/csv
+# MAGIC ls 
 
 # COMMAND ----------
 
 # MAGIC %python
-# MAGIC mount_datalake(containers)
+# MAGIC dbutils.fs.unmount("/mnt")
 
 # COMMAND ----------
 
@@ -59,5 +62,5 @@ def unmount_datalake(containers):
 # MAGIC keydatalake = "HJHthyuiop245#$%¨&*()_"
 # MAGIC print(keydatalake)
 # MAGIC 
-# MAGIC keydatalake = dbutils.secrets.get(scope = "scp-kv-prod", key = "secret-key-datalake")
+# MAGIC keydatalake = dbutils.secrets.get(scope = "scp-kv-cognitivo", key = "secret-key-datalake")
 # MAGIC print("teste/"+keydatalake)
